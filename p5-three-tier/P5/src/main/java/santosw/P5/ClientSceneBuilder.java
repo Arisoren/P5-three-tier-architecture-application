@@ -1,13 +1,20 @@
 package santosw.P5;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Scanner;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -91,7 +98,7 @@ public class ClientSceneBuilder
 	{ return clientScene; }
 	
 	//updates instrumentBrands choiceBox according to the currently selected instrument.
-	public void updateBrands()
+	private void updateBrands()
 	   {
 	     instrumentBrands.getItems().clear();
 	     if(instruments.getValue() == "guitar")
@@ -110,6 +117,55 @@ public class ClientSceneBuilder
 	     instrumentBrands.getSelectionModel().selectFirst();
 	   }
 	
+	private void sendRequest() 
+	{
+		
+	      String type = this.instruments.getValue();
+	      String brand = this.instrumentBrands.getValue();
+	      String theCost = this.price.getText();
+	      if(theCost.length() == 0)
+	      {
+	        theCost = "0";
+	      }
+	      String ware = this.storage.getValue();
+	      String request = type + " " + brand + " " + theCost + " " + ware+"\n";
+			System.out.println("[" + request + "]");
+	      try
+	      {
+
+			   Socket s = null;
+	          s = new Socket("localhost", 8889);
+	         InputStream instream = s.getInputStream();
+	         OutputStream outstream = s.getOutputStream();
+	         Scanner in = new Scanner(instream);
+	         PrintWriter out = new PrintWriter(outstream); 
+
+	         out.print(request);
+	         out.flush();
+	         String response = "";
+	         int lines = 0;
+	         while(in.hasNext())
+	         {
+	           response += in.nextLine();
+	           response += "\n";
+	           lines++;
+	         }
+	         System.out.println(response);
+				
+	         Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle(titleTxt);
+	         alert.setResizable(true);
+	         alert.getDialogPane().setPrefSize(500, 150 + 20*lines);
+	         alert.setHeaderText("Results");
+				alert.setContentText(response);
+	         
+				System.out.println("***** height = " + alert.getHeight() + 
+	                            " width = " + alert.getWidth());
+				alert.show();
+	      }
+	      catch(Exception e) {}	
+	   }
+	
 	//when an instrument is selected, update brand choicebox to only display brands relevant to instrument type
 	private EventHandler<ActionEvent> instrumentSelected()
 	{
@@ -121,6 +177,18 @@ public class ClientSceneBuilder
 				};
 				
 				return instrumentSelected;
+	}
+	
+	private EventHandler<ActionEvent> TextButtonListener()
+	{
+		EventHandler<ActionEvent> TextButtonListener = new EventHandler<ActionEvent>()
+				{
+					@Override
+					public void handle(ActionEvent event) 
+					{ sendRequest(); }
+				};
+				
+				return TextButtonListener;
 	}
 	
 }

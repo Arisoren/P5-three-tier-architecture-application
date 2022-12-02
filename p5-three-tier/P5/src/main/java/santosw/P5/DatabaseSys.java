@@ -27,6 +27,9 @@ public class DatabaseSys
 		SimpleDataSource.init("database.properties");
 		this.conn = SimpleDataSource.getConnection();
 		this.stat = conn.createStatement();
+		
+		
+		
 	}
 	
 	public void ShowResults(ResultSet someResult)
@@ -79,47 +82,6 @@ public class DatabaseSys
 		}
 	}
 	
-	public ResultSet createInstruments() throws Exception
-	{
-	         this.stat.execute("CREATE TABLE Instruments (instName CHAR(12),instNumber INTEGER,cost DOUBLE,descrip CHAR(20))");
-	         this.stat.execute("INSERT INTO Instruments VALUES ('guitar',1,100.0,'yamaha')");
-	         this.stat.execute("INSERT INTO Instruments VALUES ('guitar',2,500.0,'gibson')");
-	         this.stat.execute("INSERT INTO Instruments VALUES ('bass',3,250.0,'fender')");
-	         this.stat.execute("INSERT INTO Instruments VALUES ('keyboard',4,600.0,'roland')");
-	         this.stat.execute("INSERT INTO Instruments VALUES ('keyboard',5,500.0,'alesis')");
-	         ResultSet result = this.stat.executeQuery("SELECT * FROM Instruments");
-	         return result;
-	}
-	
-	public ResultSet createLocations() throws Exception
-	{
-		this.stat.execute("CREATE TABLE Locations (locName CHAR(12),locNumber INTEGER,address CHAR(50))");
-		this.stat.execute("INSERT INTO Locations VALUES ('PNS',1,'Pensacola Florida')");
-		this.stat.execute("INSERT INTO Locations VALUES ('CLT',2,'Charlotte North Carolina')");
-		this.stat.execute("INSERT INTO Locations VALUES ('DFW',3,'Dallas Fort Worth Texas')");
-	    ResultSet result = this.stat.executeQuery("SELECT * FROM Locations");
-	    return result;
-	}
-	
-	public ResultSet createInventory() throws Exception
-	{
-		this.stat.execute("CREATE TABLE Inventory (iNumber INTEGER,lNumber INTEGER,quantity INTEGER)");
-		this.stat.execute("INSERT INTO Inventory VALUES (1,1,15)");
-		this.stat.execute("INSERT INTO Inventory VALUES (1,2,27)");
-		this.stat.execute("INSERT INTO Inventory VALUES (1,3,20)");
-		this.stat.execute("INSERT INTO Inventory VALUES (2,1,10)");
-		this.stat.execute("INSERT INTO Inventory VALUES (2,2,10)");
-		this.stat.execute("INSERT INTO Inventory VALUES (2,3,35)");
-		this.stat.execute("INSERT INTO Inventory VALUES (3,1,45)");
-		this.stat.execute("INSERT INTO Inventory VALUES (3,2,10)");
-		this.stat.execute("INSERT INTO Inventory VALUES (3,3,17)");
-		this.stat.execute("INSERT INTO Inventory VALUES (4,1,28)");
-		this.stat.execute("INSERT INTO Inventory VALUES (4,2,10)");
-		this.stat.execute("INSERT INTO Inventory VALUES (4,3,16)");        
-	    ResultSet result = this.stat.executeQuery("SELECT * FROM Inventory");
-	    return result;
-	}
-	
 	public void CloseConnection()
 	{
 		try 
@@ -135,3 +97,4 @@ public class DatabaseSys
 		System.out.println("dropped Table Test2, closed connection and ending program");
 	}
 }
+	
