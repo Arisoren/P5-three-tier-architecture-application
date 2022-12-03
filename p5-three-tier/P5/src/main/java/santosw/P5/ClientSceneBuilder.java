@@ -20,6 +20,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/***************************************************************
+ * Student Name: Wilver Santos
+ * File Name: ClientSceneBuilder.java
+ * Assignment number: Project 5
+ *
+ * the ClientSceneBuilder class is responsible for creating the scene for the Instrument search client's GUI, as well as assigning the functionality of its buttons,
+ * including the necessary networking portion to submit instructions to the database
+ * USES CODE FROM PROVIDED CLIENT EXAMPLE.  
+ ***************************************************************/
+
 public class ClientSceneBuilder 
 {
 	private Scene clientScene;
@@ -78,7 +88,7 @@ public class ClientSceneBuilder
 		
 	    //builds submit button
 	    submitB = new Button("Submit Request");
-		//submitB.setOnAction(new TextButtonListener());
+		submitB.setOnAction(TextButtonListener());
 		
 	    //creates, formats, and populates HBox for submit button
 	    HBox buttonBox = new HBox(10);
@@ -120,21 +130,21 @@ public class ClientSceneBuilder
 	private void sendRequest() 
 	{
 		
-	      String type = this.instruments.getValue();
-	      String brand = this.instrumentBrands.getValue();
-	      String theCost = this.price.getText();
+	      String type = instruments.getValue();
+	      String brand = instrumentBrands.getValue();
+	      String theCost = price.getText();
+	      
 	      if(theCost.length() == 0)
 	      {
 	        theCost = "0";
 	      }
-	      String ware = this.storage.getValue();
-	      String request = type + " " + brand + " " + theCost + " " + ware+"\n";
+	      String ware = storage.getValue();
+	      String request = type + " " + brand + " " + theCost + " " + ware + "\n";
 			System.out.println("[" + request + "]");
 	      try
 	      {
-
-			   Socket s = null;
-	          s = new Socket("localhost", 8889);
+			 Socket s = null;
+	         s = new Socket("localhost", InstrumentServer.SBAP_PORT);
 	         InputStream instream = s.getInputStream();
 	         OutputStream outstream = s.getOutputStream();
 	         Scanner in = new Scanner(instream);
@@ -146,14 +156,15 @@ public class ClientSceneBuilder
 	         int lines = 0;
 	         while(in.hasNext())
 	         {
-	           response += in.nextLine();
-	           response += "\n";
-	           lines++;
+	        		response += in.nextLine();
+	        		response += "\n";
+		        	lines++;
 	         }
+	         
 	         System.out.println(response);
 				
 	         Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle(titleTxt);
+				alert.setTitle("Search Results");
 	         alert.setResizable(true);
 	         alert.getDialogPane().setPrefSize(500, 150 + 20*lines);
 	         alert.setHeaderText("Results");
@@ -166,7 +177,7 @@ public class ClientSceneBuilder
 	      catch(Exception e) {}	
 	   }
 	
-	//when an instrument is selected, update brand choicebox to only display brands relevant to instrument type
+	//when an instrument is selected, update brand choice box to only display brands relevant to instrument type
 	private EventHandler<ActionEvent> instrumentSelected()
 	{
 		EventHandler<ActionEvent> instrumentSelected = new EventHandler<ActionEvent>()
@@ -179,6 +190,7 @@ public class ClientSceneBuilder
 				return instrumentSelected;
 	}
 	
+	
 	private EventHandler<ActionEvent> TextButtonListener()
 	{
 		EventHandler<ActionEvent> TextButtonListener = new EventHandler<ActionEvent>()
@@ -190,6 +202,6 @@ public class ClientSceneBuilder
 				
 				return TextButtonListener;
 	}
-	
+
 }
 
